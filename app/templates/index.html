@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+<form id="form"> 
+<div style="text-align: left; display: table; margin-top: 10px; margin-bottom: 20px;">
+<div style="display: table-row; margin-bottom:10px;">
+
+
+<div class="align-bottom" style="display: table-cell; padding-left: 10px;" >
+  <input style="height: 40px; border-width: 1px; "type="search" id="query" name="q" placeholder="Search...">
+</div>
+
+<div class="align-bottom" style="display: table-cell; padding-left: 10px;" >
+  <label class="input-group-addon">Filter by Category:</label>
+    <select name="categories" class="selectpicker form-control">
+      {% for category in categories %}
+      <option value="{{ category }}">{{ category }}</option>
+      {% endfor %}
+    </select>
+</div>
+<div class="form-group" style="display: table-cell; padding-left: 10px;" > 
+<label class="input-group-addon">Sort by:</label>
+    <select name="sortkey" class="selectpicker form-control">
+      <option value="None">None</option>
+      <option value="price">Price</option>
+      <option value="name">Name</option>
+    </select>
+</div>
+<div class="form-group" style="display: table-cell; padding-left: 10px;" > 
+<label class="input-group-addon">Sort order:</label>
+    <select name="order" class="selectpicker form-control">
+      <option value="ASC">Lowest to Highest</option>
+      <option value="DESC">Highest to Lowest</option>
+    </select>
+</div>  
+<div class="align-bottom" style="display: table-cell; padding-left: 10px;" > 
+  <button style="border: none; border-radius: 10%; height: 40px; background-color: #E76F51; color: white">Search</button>
+</div>  
+</div>
+</div>
+</form>
+
+<div style="margin-bottom: 10px; ">
+<img src="../static/Products.png">
+<h10>Showing products {{first}} to {{last}}:
+<a href="{{ url_for('index.previousPage', page_number =page_number)}}" type="button" class="btn">← Previous Page</a>
+<a href="{{ url_for('index.nextPage', page_number =page_number)}}" type="button" class="btn">Next Page →</a>
+</h10>
+</div>
+
+<table class='table table-hover table-bordered container'>
+  <thead class="table-success">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Product Description</th>
+      <th scope="col">Price</th>
+      <th scope="col">Add to Cart</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in avail_products%}
+    <tr>
+      <td>
+        <a href="{{ url_for('index.productPage', name=product.name) }}" type="button" class="btn">{{product.name}}
+        </a>
+      </td>
+      <td>{{product.description}}</td>
+      <td>${{"{:.2f}".format(product.price)}}</td>
+      <td>
+       <a href="{{url_for('index.addItem', product_id = product.product_id) }}" type="button" class="btn">{{buttonName}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+   </tbody>
+ </table>
+
+
+
+{% endblock %}

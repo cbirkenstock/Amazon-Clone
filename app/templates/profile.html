@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<div style="padding-left: 10px; margin-top: -20px">
+
+  <h1>Profile:</h1>
+
+
+  <div style="text-align: left; display: table; padding-bottom: 30px; padding-top: 10px;">
+    <div style="display: table-row">
+
+
+      <div style="display: table-cell; width: 25%; padding-top: 10px;">
+        <img src="../static/2.png" width="100" height="100" style='border:3px solid #264653; border-radius: 50%'>
+      </div>
+
+      <div class="align-top" style="display: table-cell; width: 75%; padding-left: 20px;">
+        <div style="color: rgb(255, 255, 255); text-align: left; padding-bottom: 10px;">
+          <a href="{{ url_for('users.update_profile') }}" type="button" class="btn btn-light">Update Account</a>
+          <a href="{{ url_for('users.update_balance') }}" type="button" class="btn btn-light">Update Balance</a>
+        </div>
+
+
+        <div style="text-align: left; ">
+          <h5>Hello {{current_user.name}}! </h5>
+          <div>
+            Your Account Number: {{current_user.id}}
+          </div>
+          <div>
+            Your Balance: ${{"{:.2f}".format(current_user.balance)}}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <h1>Your Purchase History:</h1>
+
+  <form id="form">
+    <div style="text-align: left; display: table; margin-top: 10px; margin-bottom: 20px;">
+      <div style="display: table-row; ">
+
+        <div class="form-group" style="display: table-cell ; color: #E9C46A">
+          <input type="search" id="query" name="q" placeholder="Search Order ID..."
+            style="height:40px; border-radius: 2px; padding-left: 10px">
+        </div>
+        <div class="form-group" style="display: table-cell; padding-left: 10px; color: #E9C46A">
+          <select name="order" class="selectpicker form-control"
+            style="border-width: 2px;border-color: #264653;color: #264653; height:40px">
+            <option value="DESC">Most Recent First</option>
+            <option value="ASC">Oldest First</option>
+          </select>
+        </div>
+        <div class="form-group" style="display: table-cell; padding-left: 10px; color: #E9C46A; ">
+          <button style="height:40px; border-radius: 10%; background-color: #E76F51; color: white">Search</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+
+  <table class='table table-hover table-bordered container' style="color: #264653">
+    <thead class="table-success" style="color: #264653">
+      <tr>
+        <th scope="col">Order ID:</th>
+        <th scope="col">Number of Items:</th>
+        <th scope="col">Total Amount:</th>
+        <th scope="col">Date Purchased:</th>
+        <th scope="col">Fulfilled?</th>
+        <th scope="col">Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in purchased_products%}
+      <tr>
+        <td><a style="color: #E76F51"
+            href="{{url_for('order.order', order_id = product.order_id) }}">{{product.order_id}}</a></td>
+        <td>{{product.num_items}}</td>
+        <td>${{"{:.2f}".format(product.total_amount)}}</td>
+        <td>{{product.order_date.strftime("%d/%m/%Y")}}</td>
+
+        {% if product.fulfillment_status %}
+        <td>Yes</td>
+        {% else %}
+        <td>No</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+<center><h1>{{name}}</h1></center>
+
+<center><p>
+{{product[0].description}}
+</p></center>
+
+<p>
+<center><div><img src={{product[0].image}} class="center" width="300"></div></center>
+</p>
+<center><p>
+<div>Price: ${{"{:.2f}".format(product[0].price)}}</div>
+</p></center>
+
+<p>
+<h3>Sellers and Quantities:</h3>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Seller</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Add to cart</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for seller_elem in seller_info%}
+    <tr>
+      <td><a href="{{url_for('users.user_view', user_id = seller_elem.seller_id) }}" type="button" class="btn">{{seller_elem.seller_name}}</a></td>
+      <td>{{seller_elem.quantity}}</td>
+      <td><a href="{{url_for('index.addItem', product_id = seller_elem.product_id) }}" type="button" class="btn">Add</a>
+      </td>
+    <tr>
+    {% endfor %}
+   </tbody>
+ </table>
+</p>
+
+<p>
+<h3>Reviews:</h3>
+<p><a href="{{url_for('reviews.newPR')}}" type="button" class="btn">{{buttonName}}</a></p>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews%}
+    <tr>
+      <td scope="row">{{review.review_date}}</td>
+      <td>{{review.rating}}</td>
+      <td>{{review.description}}</td>
+    <tr>
+    {% endfor %}
+   </tbody>
+ </table>
+</p>
+
+{% endblock %}

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <title>Mini Amazon</title>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"
+        integrity="sha512-tMabqarPtykgDtdtSqCL3uLVM0gS1ZkUAVhRFu1vSEFgvB73niFQWJuvviDyBGBH22Lcau4rHB5p2K2T0Xvr6Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/example.css') }}">
+    <style>
+        body {
+            font-family: "Lucida Console", monospace;
+            color: #264653;
+        }
+
+        .main-head {
+            height: 150px;
+            background: #FFF;
+        }
+
+        .sidenav {
+            height: 50%;
+            background-color: #a2e2bf;
+            overflow-x: hidden;
+            padding-top: 0px;
+        }
+
+        .main {
+            padding: 0px 10px;
+        }
+
+        .login-main-text {
+            margin-top: 20%;
+            padding: 60px;
+            color: #fff;
+        }
+
+        .login-main-text h2 {
+            font-weight: 300;
+        }
+
+        .btn-black {
+            background-color: #E76F51 !important;
+            color: #fff;
+        }
+
+        .btn-confirm {
+            background-color: #E76F51;
+            color: #fff;
+            text-align: center;
+            font-size: 1.2em;
+            padding-top: 7px;
+            font-weight: 500;
+            height: 85%;
+        }
+
+        .btn-edit {
+            background-color: #E76F51;
+            color: #fff;
+            text-align: center;
+            font-size: 1.2em;
+            padding-top: 7px;
+            font-weight: 500;
+            height: 85%;
+        }
+
+        .row-space-between {
+            flex-direction: row;
+        }
+
+        .row-space-around {
+            flex-direction: 'row';
+            justify-content: space-around;
+            align-content: center;
+            padding-left: 25px;
+            padding-right: 25px;
+            margin-bottom: 5px;
+        }
+
+        .row {
+            flex-direction: 'row';
+            justify-content: space-between;
+            align-content: center;
+            padding-left: 25px;
+            padding-right: 25px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidenav" style="margin: 0; height: 100%; overflow: hidden">
+        {% block msg %}
+        <div
+            style="color: rgb(255, 255, 255); text-align: left; margin-bottom: -50px; margin-top: -30px; font-size: larger;">
+            <a href="{{ url_for('index.index') }}" style="color: #a2e2bf">
+                <img src="../static/logo.png" width="200" height="200">
+            </a>
+
+
+            Hello {{current_user.name}}!
+
+            <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light"
+                style="color: #264653; margin-left:20px">SHOP</a>
+            <a href="{{ url_for('sellerDashboard.goToDashboard', edit=0) }}" type="button" class="btn btn-light"
+                style="color: #264653">INVENTORY</a>
+            <a href="{{ url_for('reviews.load') }}" type="button" class="btn btn-light"
+                style="color: #264653">REVIEWS</a>
+            <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light" style="color: #264653">CART</a>
+            <a href="{{ url_for('users.profile') }}" type="button" class="btn btn-light"
+                style="color: #264653">PROFILE</a>
+            <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light"
+                style="color: #264653">LOGOUT</a>
+
+
+        </div>
+        {% endblock %}
+
+    </div>
+    <div style="margin-left:10px">
+        <div class="row" style="justify-content: space-between; margin-top: 10px; flex: 1;">
+            <div style="width: 48%;">
+                <div style="height: 49%; align-content: center;">
+                    <h2>Inventory:</h2>
+                    <div class='row'
+                        style="margin-left: 0px; width:100%; padding-right: 0px; padding-left: 0px; align-content: center;">
+                        {% if editing %}
+                        <form id="form">
+                            <div
+                                style="text-align: left; display: table; margin-top: 0px; margin-bottom: 0px; margin-left:10px;">
+                                <div style="display: table-row; ">
+
+                                    <div class="form-group" style="display: table-cell ; color: #E9C46A;">
+                                        <input type="search" id="query" name="q" placeholder="Search Product Name..."
+                                            style="height:40px;  border-radius: 2px; padding-left: 10px">
+                                    </div>
+
+                                    <div class="form-group"
+                                        style="display: table-cell; padding-left: 10px; color: #E9C46A; ">
+                                        <button
+                                            style="height:40px; border-radius: 10%; background-color: #E76F51; color: white">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div style="flex-direction: row; margin-top: 2.5px;">
+                            <a href="{{ url_for('sellerDashboard.goToDashboard', edit=0) }}" type="button"
+                                class="btn">Confirm
+                                Items</a>
+                        </div>
+                        {% else %}
+                        <form id="form">
+                            <div
+                                style="text-align: left; display: table; margin-top: 2px; margin-bottom: 0px; margin-left:0px;">
+                                <div style="display: table-row; ">
+
+                                    <div class="form-group" style="display: table-cell ; color: #E9C46A;">
+                                        <input type="search" id="query" name="q" placeholder="Search Product Name..."
+                                            style="height:40px;  border-radius: 2px; padding-left: 10px">
+                                    </div>
+
+                                    <div class="form-group"
+                                        style="display: table-cell; padding-left: 10px; color: #E9C46A; ">
+                                        <button
+                                            style="height:40px; border-radius: 10%; background-color: #E76F51; color: white">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div style="flex-direction: row; margin-top: 0px;">
+                            <a href="{{ url_for('sellerDashboard.goToDashboard', edit=1) }}" type="button" class="btn"
+                                style="margin-right: 5px; margin-bottom: 3px;">Edit
+                                Items</a>
+                            <a href="{{ url_for('sellerDashboard.addProduct') }}" type="button" class="btn"
+                                style="margin-right: 5px; margin-bottom: 3px;">Add
+                                To
+                                Inventory</a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+
+                    <table class='table table-hover table-bordered' style="margin-top: 5px;">
+                        <thead class="table-success">
+                            <tr>
+                                {% if editing %}
+                                <th scope="col">Product ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Edit</th>
+                                <th scope="col">Delete</th>
+                                {% else %}
+                                <th scope="col">Product ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in inventory %}
+                            <tr>
+                                {% if editing %}
+                                <th scope="row">{{product.product_id}}</th>
+                                <td>{{product.name}}</td>
+                                <td>{{product.price}}</td>
+                                <td><input type="number" id={{product.product_id}} name="quantity" required
+                                        minlength="1" maxlength="8" size="10" value={{product.quantity}}>
+                                </td>
+                                <td><a href="{{ url_for('sellerDashboard.updateProduct', id=0, quantity=0) }}"
+                                        type="button" class="btn" onclick="this.href = 'updateProduct/' + {{product.product_id}} + '/' + document.getElementById({{product.product_id}}).value
+                        ">Update
+                                        Item</a>
+                                </td>
+                                <td><a href="{{ url_for('sellerDashboard.makeProductUnavailable', id=product.product_id) }}"
+                                        type="button" class="btn">Delete Item</a>
+                                </td>
+
+                                {% else %}
+                                <th scope="row">{{product.product_id}}</th>
+                                <td>{{product.name}}</td>
+                                <td>{{product.price}}</td>
+                                <td>{{product.quantity}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="height: 51%;">
+                    <h2>Orders:</h2>
+                    <form id="form">
+                        <div
+                            style="text-align: left; display: table; margin-top: 0px; margin-bottom: 0px; margin-left:0px;">
+                            <div style="display: table-row; ">
+
+                                <div class="form-group" style="display: table-cell ; color: #E9C46A;">
+                                    <input type="search" id="query" name="o" placeholder="Search Order Name..."
+                                        style="height:40px;  border-radius: 2px; padding-left: 10px">
+                                </div>
+
+                                <div class="form-group"
+                                    style="display: table-cell; padding-left: 10px; color: #E9C46A; ">
+                                    <button
+                                        style="height:40px; border-radius: 10%; background-color: #E76F51; color: white">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <table class='table table-hover table-bordered container' style="margin-top: 5px;">
+                        <thead class="table-success">
+                            <tr>
+                                <th scope="col">Order Id</th>
+                                <th scope="col">Product Id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">date</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Fulfilled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders%}
+                            <tr>
+                                <th scope="row">{{order.order_id}}</th>
+                                <td>{{order.product_id}}</td>
+                                <td>{{order.name}}</td>
+                                <td>{{order.order_date}}</td>
+                                <td>{{order.price_paid}}</td>
+                                <td>{{order.quantity}}</td>
+                                {% if order.fulfillment_status %}
+                                <td>{{order.fulfillment_status}}</td>
+                                {% else %}
+                                <td><a href="{{ url_for('sellerDashboard.fulfillOrder', order_id=order.order_id, product_id=order.product_id) }}"
+                                        type="button" class="btn">Fulfill</a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="width:48%">
+                <div>
+                    {% if personal %}
+                    <h3>Sales for Your Top 3 Products by Month</h3>
+                    {% else %}
+                    <h3>Top 3 Products on Cool Amazon by Month</h3>
+                    <h6>(Get those sales up to see your personal sales data!)</h6>
+                    {% endif %}
+                    <canvas id="myChart"></canvas>
+                </div>
+                <div style="margin-top: 20px;">
+                    {% if personal %}
+                    <h2>Proportional Sales for Your Top 5 Products</h2>
+                    {% else %}
+                    <h2>Proportional Sales of Top 5 Products on Cool Amazon</h2>
+                    <h6>(Get those sales up to see your personal sales data!)</h6>
+                    {% endif %}
+                    <canvas id="myChart2"></canvas>
+                </div>
+                <script type="text/javascript">
+                    var trendData = {{ HTMLData | safe }};
+                    var proportionCount = {{ HTMLData2 | safe }};
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'radar',
+                        data: {
+                            labels: trendData[0],
+                            datasets: [{
+                                label: trendData[1][0],
+                                data: trendData[1][1],
+                                fill: true,
+                                backgroundColor: 'rgb(233, 196, 106, 0.2)',
+                                borderColor: '#E9C46A',
+                                pointBackgroundColor: '#E9C46A',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: '#E9C46A'
+                            }, {
+                                label: trendData[2][0],
+                                data: trendData[2][1],
+                                fill: true,
+                                backgroundColor: 'rgb(231, 111, 81, 0.2)',
+                                borderColor: '#E76F51',
+                                pointBackgroundColor: '#E76F51',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: '#E76F51'
+                            }, {
+                                label: trendData[3][0],
+                                data: trendData[3][1],
+                                fill: true,
+                                backgroundColor: 'rgb(42, 157, 143, 0.2)',
+                                borderColor: '#2A9D8F',
+                                pointBackgroundColor: '#2A9D8F',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: '#2A9D8F'
+                            }]
+                        },
+                        options: {
+                            responsive: true
+                        }
+                    });
+
+                    const ctx2 = document.getElementById('myChart2').getContext('2d');
+                    const myChart2 = new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: {
+                            labels: [trendData[1][0], trendData[2][0], trendData[3][0], trendData[4][0], trendData[5][0]],
+                            datasets: [{
+                                data: proportionCount,
+                                backgroundColor: [
+                                    '#E9C46A',
+                                    '#E76F51',
+                                    '#2A9D8F',
+                                    '#F4A261',
+                                    '#264653'
+                                ],
+                                hoverOffset: 4
+                            }],
+                        },
+                        options: {
+                            responsive: true
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+        <br><br>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if current_user.is_authenticated %}
+<h2>Checkout</h2>
+<p>Any unavailable items have been moved to your Saved For Later.</p>
+
+<table class='table table-hover table-bordered container' style="color:#264653">
+    <thread class="table-success" style="color:#264653">
+     <tr style="background-color:#a2e2bf">
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Price</th>
+     </tr>
+    </thread>
+    <tbody>
+     {%for entry in user_cart%}
+      <tr>
+       <td>{{entry.product_id}}</td>
+       <td>{{entry.name}}</td>
+       <td>{{entry.quantity}}<br/>
+        <a href="{{url_for('cart.COadd1', product_id=entry.product_id) }}" type="button" class="btn">+1</a>
+        <a href="{{url_for('cart.COadd5', product_id=entry.product_id) }}" type="button" class="btn">+5</a>
+        <a href="{{url_for('cart.COadd10', product_id=entry.product_id) }}" type="button" class="btn">+10</a><br/>
+        <a href="{{url_for('cart.COrem1', product_id=entry.product_id) }}" type="button" class="btn">-1</a>
+        <a href="{{url_for('cart.COrem5', product_id=entry.product_id) }}" type="button" class="btn">-5</a>
+        <a href="{{url_for('cart.COrem10', product_id=entry.product_id) }}" type="button" class="btn">-10</a><br/>
+        <a href="{{url_for('cart.COdelItem', product_id=entry.product_id) }}" type="button" class="btn">Delete</a></td>
+       </td>
+       <td>{{entry.price}}</td>
+      </tr>
+     {% endfor %}		
+    </tbody>
+</table>
+<h3>Total Price: ${{price}}</h3>      <!-- ------------------------------------ -->
+<h3>Your Balance: ${{bal}}</h3>
+{% if bal < price %}
+<h3 style="color:red">Insufficient funds</h2>
+{% else %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.address.label }}<br/>
+      {{ form.address(size=32) }}<br/>
+      {% for error in form.address.errors %}
+      <span style="color: #E76F51;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+  </form>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+

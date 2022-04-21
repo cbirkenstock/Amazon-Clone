@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Update Balance</h1>
+<div>
+    Current Balance: $ {{ current_user.balance }}
+</div>
+
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.amount.label }}<br/>
+    {{ form.amount(size=32) }}<br/>
+    {% for error in form.amount.errors %}
+    <span style="color: #E76F51;">[{{ error }}]</span>
+    {% endfor %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li style="color: #E76F51;"> {{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+  </p>
+  
+  
+  <p>{{ form.submitadd() }}</p>
+  <p>{{ form.submitsub() }}</p>
+</form>
+
+{% endblock %}

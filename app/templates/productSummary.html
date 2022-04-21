@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+  
+{% block content %}
+<br><br>
+<center><h1><a href="{{ url_for('index.productPage', name = product_name) }}" type="button" class="btn">{{product_name}}</a></h1></center>
+<p>
+<h3>Statistics:</h3>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Number of Ratings</th>
+      <th scope="col">Average Rating (0-5)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{num_ratings}}</td>
+      <td>{{avg_ratings}}</td>
+    </tr>
+   </tbody>
+ </table>
+</p>
+<p>
+<h3>Recent Reviews:</h3>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Customer ID</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Description</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+	  {% for review in recent_reviews %}
+    <tr>
+      <td>{{review.user_id}}</td>
+      <td>{{review.rating}}</td>
+      <td>{{review.description}}</td>
+      <td>{{review.review_date}}</td>
+    <tr>
+	    {% endfor %}
+   </tbody>
+ </table>
+</p>
+{% endblock %}

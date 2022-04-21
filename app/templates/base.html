@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <!-- FontAwesome -->
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+  <title>Cool Amazon</title>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/example.css') }}">
+  <style>
+    body {
+      font-family: "Lucida Console", monospace;
+      color: #264653;
+    }
+
+    .main-head {
+      height: 10px;
+      background: #FFF;
+    }
+
+    .sidenav {
+      height: 50%;
+      background-color: #a2e2bf;
+      overflow-x: hidden;
+      padding-top: 0px;
+    }
+
+    .main {
+      padding: 0px 10px;
+    }
+
+    .login-main-text {
+      margin-top: 20%;
+      padding: 0px;
+      color: #fff;
+    }
+
+    .login-main-text h2 {
+      font-weight: 300;
+    }
+
+    .btn-black {
+      background-color: #264653 !important;
+      color: #fff;
+    }
+    table {
+	text-align: center;
+	table-layout: fixed;
+	width: 100%;
+    }
+    input {
+	
+	padding-left: 10px;
+	padding-right: 10px;
+	
+    }
+    ::-webkit-input-placeholder {
+	
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="sidenav" style = "margin: 0; height: 100%; overflow: hidden">
+    {% block msg %}
+    <div style="color: rgb(255, 255, 255); text-align: left; margin-bottom: -50px; margin-top: -30px; font-size: larger;">
+      <a href="{{ url_for('index.index') }}" style="color: #a2e2bf">
+      <img src="../static/logo.png" width="200" height="200">
+      </a>
+      
+      {% if current_user.is_authenticated %}
+      Hello {{current_user.name}}! 
+      
+        <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light" style="color: #264653; margin-left:20px">SHOP</a>
+        <a href="{{ url_for('sellerDashboard.goToDashboard', edit=0) }}" type="button" class="btn btn-light" style="color: #264653">INVENTORY</a>
+        <a href="{{ url_for('reviews.load') }}" type="button" class="btn btn-light" style="color: #264653">REVIEWS</a> 
+        <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light" style="color: #264653">CART</a>
+        <a href="{{ url_for('users.profile') }}" type="button" class="btn btn-light" style="color: #264653">PROFILE</a>
+        <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light" style="color: #264653">LOGOUT</a>
+        {% else %}
+        <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light" style="color: #264653">LOGIN</a>
+        <a href="{{ url_for('users.register') }}" type="button" class="btn btn-light" style="color: #264653">REGISTER</a>
+        {% endif %}
+      
+      
+    </div>
+    {% endblock %}
+  </div>
+  <div class="main">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+
+
+
+
+</html>

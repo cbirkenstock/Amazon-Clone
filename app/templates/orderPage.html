@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if current_user.is_authenticated %}
+<h2 style="margin-top: 20px;">Order Number #{{order_id}}</h2>
+<h5>Date Placed: {{order_date}}</h5>
+<h5>Shipping To: {{address}}</h5>
+<h5>Order Fulfillment Status: {{status}} </h5>
+<h5>Total Price: {{finalprice}}</h5>
+
+<table class='table table-hover table-bordered container' style="color:#264653">
+    <thread class="thread-dark" style="color:#264653">
+     <tr style="background-color:#a2e2bf">
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Price</th>
+      <th scope="col">Status</th>
+     </tr>
+    </thread>
+    <tbody>
+     {%for entry in items%}
+      <tr>
+       <td>{{entry.product_id}}</td>
+       <td>{{entry.name}}</td>
+       <td>{{entry.quantity}}<br/>
+       <td>{{entry.price_paid}}</td>
+       <td>{{entry.fulfillment_status}}</td>
+      </tr>
+     {% endfor %}
+    </tbody>
+   </table>
+
+   <a href="{{url_for('users.profile')}}" type="button" class="btn">Your Orders</a>
+{% endif %}
+
+{% endblock %}

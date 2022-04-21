@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if current_user.is_authenticated %}
+<h2>Your Cart<h2>
+<h3>Balance: {{balance}}</h3>
+<table class='table table-hover table-bordered container' style="color:#264653">
+ <thread class="table-success" style="color:#264653">
+  <tr style="background-color:#a2e2bf">
+   <th scope="col">Product ID</th>
+   <th scope="col">Product Name</th>
+   <th scope="col">Quantity</th>
+   <th scope="col">Price</th>
+   <th scope="col">Save for Later</th>
+  </tr>
+ </thread>
+ <tbody>
+  {%for entry in user_cart%}
+   <tr>
+    <td>{{entry.product_id}}</td>
+    <td>{{entry.name}}</td>
+    <td>{{entry.quantity}}<br/>
+      <a href="{{url_for('cart.add1', product_id=entry.product_id) }}" type="button" class="btn">+1</a>
+      <a href="{{url_for('cart.add5', product_id=entry.product_id) }}" type="button" class="btn">+5</a>
+      <a href="{{url_for('cart.add10', product_id=entry.product_id) }}" type="button" class="btn">+10</a><br/>
+      <a href="{{url_for('cart.rem1', product_id=entry.product_id) }}" type="button" class="btn">-1</a>
+      <a href="{{url_for('cart.rem5', product_id=entry.product_id) }}" type="button" class="btn">-5</a>
+      <a href="{{url_for('cart.rem10', product_id=entry.product_id) }}" type="button" class="btn">-10</a><br/>
+      <a href="{{url_for('cart.delItem', product_id=entry.product_id) }}" type="button" class="btn">Delete</a></td>
+    <td>{{entry.price}}</td>
+    <td>
+      <a href="{{url_for('cart.saveItem', product_id=entry.product_id) }}" type="button" class="btn">Save Item for Later</a>
+    </td>
+   </tr>
+  {% endfor %}		
+ </tbody>
+</table>
+<h5>Total Price: {{price}}</h5><br/>
+<a href="{{url_for('cart.saveCart')}}" type="button" class="btn">Save Cart for Later</a>
+<a href="{{url_for('checkout.checkout')}}">CHECKOUT</a>
+<h2>Saved for Later</h2>
+<table class='table table-hover table-bordered container' style="color:#264653">
+    <thread class="table-success" style="color:#264653">
+        <tr style="background-color:#a2e2bf">
+         <th scope="col">Product ID</th>
+         <th scope="col">Product Name</th>
+         <th scope="col">Price</th>
+         <th scope="col">Add Back to Cart</th>
+        </tr>
+       </thread>
+       <tbody>
+        {%for entry in user_saved%}
+         <tr>
+          <td>{{entry.product_id}}</td>
+          <td>{{entry.name}}</td>
+          <td>{{entry.price}}</td>
+          <td>
+            <a href="{{url_for('cart.addBack', product_id=entry.product_id) }}" type="button" class="btn">Add Back to Cart</a>
+          </td>
+         </tr>
+        {% endfor %}		
+       </tbody>
+</table>
+
+
+{% else %}
+<p><a href="{{url_for('users.login') }}"Log in</a> to see your cart!</p>
+{% endif %}
+
+
+{% endblock %}

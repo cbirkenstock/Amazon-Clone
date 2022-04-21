@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if not current_user.is_authenticated %}
+<h2>All Reviews</h2>
+{% endif %}
+
+{% if current_user.is_authenticated %}
+<h2>My Reviews</h2>
+{% endif %}
+
+<p>Click columns to sort.</p>
+
+<div style="margin-left: 482px; padding-bottom: 20px">
+        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for reviews..." size="40" style="text-align: center">
+</div>
+
+<div style="margin-right: 20px">
+    <div style="color: rgb(255, 255, 255); text-align: center; margin-bottom: 5px">
+     {% if current_user.is_authenticated %}
+    <a href="{{ url_for('reviews.newPR') }}" type="button" class="btn btn-light">New Product Review</a>
+    <a href="{{ url_for('reviews.newSR') }}" type="button" class="btn btn-light">New Seller Review</a>
+     {% endif %}
+    </div></div>
+
+<script>
+function myFunction() {
+  
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("Input");
+  filter = input.value.toUpperCase();
+  const table_names = ['Table', 'Table2'];
+  for (var x = 0; x < table_names.length; x++) {
+	  var tn = table_names[x]
+	  table = document.getElementById(tn);
+	  tr = table.getElementsByTagName("tr");
+
+	  for (i = 1; i < tr.length; i++) {
+		var found = false;
+		var td = tr[i].getElementsByTagName("td");
+		for(j = 0; j < td.length; j++) {
+			if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+				//if found at least once it is set to true
+				found = true;
+			}
+		}	
+		//only hides or shows it after checking all columns
+		if(found){
+			tr[i].style.display = "";
+		} else {
+			tr[i].style.display = "none";
+		}
+	  }
+}
+}
+</script>
+
+<script>
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById('Table');
+  switching = true;
+  dir = "asc";
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      if (dir == "asc") {
+	if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+	  shouldSwitch = true;
+	  break;
+	}
+      } else if (dir == "desc") {
+	if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+	  shouldSwitch = true;
+	  break;
+	}
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount ++;
+    } else {
+      if (switchcount == 0 && dir == "asc") {
+	dir = "desc";
+	switching = true;
+      }
+    }
+  }
+}
+</script>
+
+<script>
+function sortTable2(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById('Table2');
+  switching = true;
+  dir = "asc";
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount ++;
+    } else {
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+
+<div>
+
+	<h2>Product Reviews</h2>
+
+<table class='table table-hover table-bordered container' style="display: inline-block" id="Table">
+  <thead class="thead-dark">
+    <tr>
+      <th onclick="sortTable(0)" scope="col">Product</th>
+      <th onclick="sortTable(1)" scope="col">Customer ID</th>
+      <th onclick="sortTable(2)" scope="col">Rating</th>
+      <th scope="col">Description</th>
+      <th onclick="sortTable(4)" scope="col">Date</th>
+      {% if current_user.is_authenticated %}
+      <th scope="col">Edit</th>
+      <th scope="col">Delete</th>
+      {% endif %}
+    </tr>
+  </thead>
+
+  <tbody>
+        {% for pr in Reviews%}
+    <tr>
+      <td><a href="{{ url_for('reviews.productSummary', product_id=pr.product_id) }}" type="button" class="btn">{{pr.product_name}}</a></td>
+      <td>{{pr.user_id}}</td>
+      <td>{{pr.rating}}</td>
+      <td>{{pr.description}}</td>
+      <td>{{pr.review_date}}</td>
+      {% if current_user.is_authenticated %}
+      <td><a href="{{url_for('reviews.editPR', user_id=pr.user_id, product_id=pr.product_id) }}" type="button" class="btn">Edit</a></td>
+      <td><a href="{{url_for('reviews.deletePR', user_id=pr.user_id, product_id=pr.product_id) }}" type="button" class="btn">Delete</a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+  <br></br>
+ 
+<h2>Seller Reviews</h2>
+
+<table class='table table-hover table-bordered container' style="display: inline-block" id="Table2">
+  <thead class="thead-dark">
+    <tr>
+      <th onclick="sortTable2(0)" scope="col">Seller</th>
+      <th onclick="sortTable2(1)" scope="col">Customer ID</th>
+      <th onclick="sortTable2(2)" scope="col">Rating</th>
+      <th scope="col">Description</th>
+      <th onclick="sortTable2(4)" scope="col">Date</th>
+      {% if current_user.is_authenticated %}
+      <th scope="col">Edit</th>
+      <th scope="col">Delete</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+       {% for sr in Reviews2 %}
+    <tr>
+      <td><a href="{{ url_for('reviews.sellerSummary', seller_id=sr.seller_id) }}" type="button" class="btn">{{sr.seller_name}}</a></td>
+      <td>{{sr.buyer_id}}</td>
+      <td>{{sr.rating}}</td>
+      <td>{{sr.description}}</td>
+      <td>{{sr.review_date}}</td>
+      {% if current_user.is_authenticated %}
+      <td><a href="{{url_for('reviews.editSR', buyer_id=sr.buyer_id, seller_id=sr.seller_id) }}" type="button" class="btn">Edit</a></td>
+      <td><a href="{{url_for('reviews.deleteSR', buyer_id=sr.buyer_id, seller_id=sr.seller_id) }}" type="button" class="btn">Delete</a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if not current_user.is_authenticated %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to create new review or view past reviews!</p>
+{% endif %}
+
+{% endblock %}
